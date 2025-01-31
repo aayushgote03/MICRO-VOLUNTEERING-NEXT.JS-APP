@@ -1,8 +1,8 @@
 import connectToDatabase from "@/lib/db";
 import TaskModel from "@/lib/Modals/taskschema";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function DELETE(request, { params }) {
+export async function DELETE(request: NextRequest, { params }) {
   let taskid = await params;
   taskid = taskid.taskid;
 

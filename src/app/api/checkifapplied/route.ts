@@ -1,9 +1,9 @@
 import connectToDatabase from "@/lib/db";
 import TaskModel from "@/lib/Modals/taskschema";
 import UserModel from "@/lib/Modals/userschema";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function POST(req) {
+export async function POST(req: NextRequest) {
     const payload = await req.json();
     const task_id = payload.task_id;
     const user = payload.user_email;

@@ -1,8 +1,8 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import connectToDatabase from "@/lib/db";
 import TaskModel from "@/lib/Modals/taskschema";
 import UserModel from "@/lib/Modals/userschema";
-export async function PUT(request, { params }) {
+export async function PUT(request: NextRequest, { params }) {
   
   let taskid = await params;
   taskid = taskid.taskid;

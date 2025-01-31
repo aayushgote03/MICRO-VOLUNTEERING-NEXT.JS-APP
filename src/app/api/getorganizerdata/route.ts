@@ -2,9 +2,9 @@ import connectToDatabase from "@/lib/db";
 import emailModel from "@/lib/Modals/emailschema";
 import TaskModel from "@/lib/Modals/taskschema";
 import UserModel from "@/lib/Modals/userschema";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function POST(request) {
+export async function POST(request: NextRequest) {
     try {
         const payload = await request.json();
         console.log(payload);

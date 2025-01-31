@@ -1,9 +1,9 @@
 import connectToDatabase from "@/lib/db";
 import TaskModel from "@/lib/Modals/taskschema";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 
-export async function POST(request) {
+export async function POST(request: NextRequest) {
     let payload = await request.json();
     const {user, taskName, description, category, deadline, status, inactiveMessage, imageurl, oftype} = payload;
     const utcDate = new Date();

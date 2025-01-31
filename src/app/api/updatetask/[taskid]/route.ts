@@ -1,11 +1,11 @@
 import connectToDatabase from "@/lib/db";
 import TaskModel from "@/lib/Modals/taskschema";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 
 // CORS Headers (adjust the allowed origin as needed)
 
-export async function PUT(request, { params }) {
+export async function PUT(request: NextRequest, { params }) {
   let taskid = await params;
   taskid = taskid.taskid;
   const payload = await request.json();

@@ -1,9 +1,9 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import connectToDatabase from "@/lib/db";
 import emailModel from "@/lib/Modals/emailschema";
 import { createReadStream } from "fs";
 
-export async function POST(request) {
+export async function POST(request: NextRequest) {
     const {sender, reciever, body, subject} = await request.json();
     const utcDate = new Date();
     let createdAt = new Date(utcDate.getTime() + 5.5 * 60 * 60 * 1000);
