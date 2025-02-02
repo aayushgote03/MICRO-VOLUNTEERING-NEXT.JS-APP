@@ -5,7 +5,7 @@ import { redirect } from "next/navigation";
 import LogoutButton from "@/components/Logoutbutton";
 import Head from "next/head"; // Import Head component to update the page title or favicon
 import OrganizerDropdown from "@/components/organizerdropdown";
-import { gettasks } from "./datafetch";
+import { gettasks } from "../api/getitforme/route";
 export default function Home() {
   const [theme, setTheme] = useState("dark");
   const [isMenuOpen, setIsMenuOpen] = useState(false);
