@@ -5,10 +5,10 @@ import { redirect } from "next/navigation";
 import LogoutButton from "@/components/Logoutbutton";
 import Head from "next/head"; // Import Head component to update the page title or favicon
 import OrganizerDropdown from "@/components/organizerdropdown";
+import { gettasks } from "./datafetch";
 export default function Home() {
   const [theme, setTheme] = useState("dark");
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isCategoryDropdownOpen, setIsCategoryDropdownOpen] = useState(false);
   const [tasks, setTasks] = useState([]);
   const [users, setUsers] = useState([]);
   const [user, setUser] = useState(null);
@@ -24,21 +24,23 @@ export default function Home() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [userRes, usersRes, userTasks] = await Promise.all([
+        const [userRes, usersRes] = await Promise.all([
           fetch("/api/get"),
           fetch("/api/getuser"),
-          fetch("/api/gettasks"),
         ]);
 
-        if (!userRes.ok || !usersRes.ok || !userTasks.ok) {
+        const clientUrl = window.location.origin;
+        console.log(clientUrl);
+        const userTasks = await gettasks(clientUrl);
+        console.log(userTasks);
+
+        if (!userRes.ok || !usersRes.ok ) {
           throw new Error("Failed to fetch data");
         }
 
         const userData = await userRes.json();
 
-        const taskdata = await userTasks.json();
-
-        const filtertask = await taskdata.filter(
+        const filtertask = await userTasks.filter(
           (task) => task.oftype === "createtask"
         );
         const userlist = await usersRes.json();

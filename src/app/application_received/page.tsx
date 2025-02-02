@@ -17,6 +17,7 @@ const ApplicationsReceived = () => {
         body: JSON.stringify({
           organizer_email: organizerName,
         }),
+        cache: 'force-cache'
       });
 
       const response = await res.json();
