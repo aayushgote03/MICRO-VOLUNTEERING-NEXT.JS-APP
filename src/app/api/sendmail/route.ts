@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import connectToDatabase from "@/lib/db";
 import emailModel from "@/lib/Modals/emailschema";
-import { createReadStream } from "fs";
+
 
 export async function POST(request: NextRequest) {
     const {sender, reciever, body, subject} = await request.json();
@@ -31,6 +31,5 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({success: false, message: 'email failed to send', error: error});
     }
 
-    return NextResponse.json({success: true, message: 'email sent'});
 
 }

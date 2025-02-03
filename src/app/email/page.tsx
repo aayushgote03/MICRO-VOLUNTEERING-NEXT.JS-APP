@@ -1,7 +1,7 @@
 'use client'
 import React from 'react';
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Mail, User, Clock, Send } from "lucide-react";
+import { User, Clock, Send } from "lucide-react";
 import { useSearchParams } from 'next/navigation';
 
 const EmailViewer = () => {

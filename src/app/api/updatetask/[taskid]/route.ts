@@ -20,7 +20,7 @@ export async function PUT(request: NextRequest, { params }) {
     console.log(task);
   } catch (error) {
     console.log(error);
-    return NextResponse.json({ success: false, message: "Updation failed" }, { headers: corsHeaders });
+    return NextResponse.json({ success: false, message: "Updation failed" });
   }
 
   return NextResponse.json(

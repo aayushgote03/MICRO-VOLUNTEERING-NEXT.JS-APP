@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { FaCalendarAlt, FaUser, FaClock, FaTags } from "react-icons/fa";
+import { FaCalendarAlt, } from "react-icons/fa";
 import { useSearchParams } from "next/navigation";
 
 const TaskDetails = () => {

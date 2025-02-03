@@ -1,6 +1,6 @@
 // app/compose/page.js
 "use client";
-import { useState, useEffect, useRef } from "react";
+import { useState, useRef } from "react";
 import {
   Send,
   Sparkles,
