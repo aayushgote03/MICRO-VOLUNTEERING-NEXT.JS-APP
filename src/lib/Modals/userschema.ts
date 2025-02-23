@@ -18,11 +18,6 @@ const application_form = new mongoose.Schema(
     }
 );
 
-const application = new mongoose.Schema(
-    {
-        recieved: {type: [application_form], default: []}
-    }
-);
 
 const UserSchema = new mongoose.Schema(
     {
@@ -31,7 +26,7 @@ const UserSchema = new mongoose.Schema(
         email: {type: String, unique: true},
         password: String,
         tasks_applied: {type: [tasks_applied], default: []},
-        application: {type: application, default: {}}
+        application: {type: [application_form], default: []}
     },
 );
 

@@ -70,7 +70,7 @@ const ApplicationsReceived = () => {
   const getStatusEmoji = (status) => {
     const emojis = {
       pending: "⏳",
-      Reviewed: "✅",
+      approve: "✅",
       Rejected: "❌",
     };
     return emojis[status] || "📋";
@@ -166,7 +166,7 @@ const ApplicationsReceived = () => {
             <div className="bg-green-100 rounded-xl p-4">
               <p className="text-green-600 font-semibold">✅ Approved</p>
               <p className="text-3xl font-bold text-green-800">
-                {applications.filter((app) => app.status === "Reviewed").length}
+                {applications.filter((app) => app.status === "approve").length}
               </p>
             </div>
             <div className="bg-red-100 rounded-xl p-4">
@@ -186,7 +186,7 @@ const ApplicationsReceived = () => {
             );
             return (
               <Card
-                key={application._id}
+                key={application.id}
                 className="bg-white bg-opacity-95 transform transition-all duration-300 hover:scale-105 hover:shadow-2xl"
               >
                 <CardHeader>
@@ -232,6 +232,8 @@ const ApplicationsReceived = () => {
                       pathname: "/email",
                       query: {
                         email: JSON.stringify(application.email),
+                        organizername: organizerName,
+                        application_id: application.id
                       },
                     }}
                     className="block w-full text-center bg-gradient-to-r from-indigo-500 to-purple-500 text-white py-2 rounded-lg font-semibold hover:from-indigo-600 hover:to-purple-600 transition-colors duration-300"

@@ -29,7 +29,7 @@ export async function PUT(request: NextRequest, { params }) {
     });
 
     const updated_user = await UserModel.findByIdAndUpdate(author._id, {
-      $push: { 'application.recieved': {applicant_id: user._id,
+      $push: { 'application': {applicant_id: user._id,
       applied_task_id: task._id, email_link: payload.email_id}
     }});
 

@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { FaCalendarAlt, } from "react-icons/fa";
+import { FaCalendarAlt } from "react-icons/fa";
 import { useSearchParams } from "next/navigation";
 
 const TaskDetails = () => {
@@ -8,25 +8,29 @@ const TaskDetails = () => {
   const searchParams = useSearchParams();
   const userData = searchParams.get("userData");
   const user = searchParams.get("user");
-  
+  const [loading, setloading] = useState(false);
+
   const task = userData ? JSON.parse(userData) : null;
   console.log(task);
 
   const statusConfig = {
-    active: { 
+    active: {
       color: "bg-emerald-100 text-emerald-700 border-emerald-200",
-      icon: "🟢"
+      icon: "🟢",
     },
-    inactive: { 
+    inactive: {
       color: "bg-red-100 text-red-700 border-red-200",
-      icon: "🔴"
-    }
+      icon: "🔴",
+    },
   };
 
   const priorityConfig = {
     high: { label: "⚡ High Priority", class: "bg-red-100 text-red-700" },
-    medium: { label: "📊 Medium Priority", class: "bg-yellow-100 text-yellow-700" },
-    low: { label: "📝 Low Priority", class: "bg-green-100 text-green-700" }
+    medium: {
+      label: "📊 Medium Priority",
+      class: "bg-yellow-100 text-yellow-700",
+    },
+    low: { label: "📝 Low Priority", class: "bg-green-100 text-green-700" },
   };
 
   const getStatusStyle = () => {
@@ -34,6 +38,7 @@ const TaskDetails = () => {
   };
 
   useEffect(() => {
+    setloading(true);
     const fetchdata = async () => {
       const res = await fetch(`/api/checkifapplied/`, {
         method: "POST",
@@ -42,6 +47,10 @@ const TaskDetails = () => {
           user_email: user,
         }),
       });
+
+      if (res.ok) {
+        setloading(false);
+      }
 
       const response = await res.json();
       setApplied(response.message !== "not applied yet");
@@ -61,33 +70,43 @@ const TaskDetails = () => {
                 <h1 className="text-2xl font-bold text-gray-900">
                   📋 {task.taskName}
                 </h1>
-                <span className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusStyle().color} border`}>
+                <span
+                  className={`px-3 py-1 rounded-full text-sm font-medium ${
+                    getStatusStyle().color
+                  } border`}
+                >
                   {getStatusStyle().icon} {task.status}
                 </span>
               </div>
-              <p className="text-gray-600 max-w-2xl">
-                {task.description}
-              </p>
+              <p className="text-gray-600 max-w-2xl">{task.description}</p>
             </div>
             <div>
-              {!applied ? (
-                <a
-                  className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors gap-2"
-                  href={`/applicationform?subject=${encodeURIComponent(task.taskName)}&author=${encodeURIComponent(task.user)}&applicant=${encodeURIComponent(user)}&task_id=${encodeURIComponent(task._id)}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  🚀 Apply for Task
-                </a>
-              ) : (
-                <button
-                  className="inline-flex items-center px-4 py-2 bg-gray-100 text-gray-500 rounded-lg font-medium cursor-not-allowed"
-                  disabled
-                >
-                  ✓ Application Submitted
-                </button>
-              )}
-            </div>
+  {loading ? (
+    <button
+      className="inline-flex items-center px-4 py-2 bg-gray-300 text-gray-500 rounded-lg font-medium cursor-not-allowed"
+      disabled
+    >
+      ⏳ Loading...
+    </button>
+  ) : !applied ? (
+    <a
+      className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors gap-2"
+      href={`/applicationform?subject=${encodeURIComponent(task.taskName)}&author=${encodeURIComponent(task.user)}&applicant=${encodeURIComponent(user)}&task_id=${encodeURIComponent(task._id)}`}
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      🚀 Apply for Task
+    </a>
+  ) : (
+    <button
+      className="inline-flex items-center px-4 py-2 bg-gray-100 text-gray-500 rounded-lg font-medium cursor-not-allowed"
+      disabled
+    >
+      ✓ Application Submitted
+    </button>
+  )}
+</div>
+
           </div>
         </div>
 
@@ -98,7 +117,6 @@ const TaskDetails = () => {
             {/* Priority Card */}
             <div className="bg-white rounded-xl shadow-sm p-6">
               <h2 className="text-lg font-semibold mb-4">📊 Task Priority</h2>
-              
             </div>
 
             {/* Timeline Card */}
@@ -107,7 +125,9 @@ const TaskDetails = () => {
               <div className="flex items-center justify-between border-l-4 border-blue-500 pl-4">
                 <div>
                   <p className="text-sm text-gray-500">Due Date</p>
-                  <p className="font-medium">{new Date(task.deadline).toLocaleDateString()}</p>
+                  <p className="font-medium">
+                    {new Date(task.deadline).toLocaleDateString()}
+                  </p>
                 </div>
                 <FaCalendarAlt className="text-blue-500 w-5 h-5" />
               </div>
@@ -121,7 +141,8 @@ const TaskDetails = () => {
                 alt="Task visualization"
                 className="w-full h-64 object-cover rounded-lg"
                 onError={(e) => {
-                  e.target.src = "https://images.unsplash.com/photo-1557683311-eac922347aa1?ixlib=rb-4.0.3";
+                  e.target.src =
+                    "https://images.unsplash.com/photo-1557683311-eac922347aa1?ixlib=rb-4.0.3";
                   e.target.alt = "Fallback task image";
                 }}
               />
@@ -132,9 +153,10 @@ const TaskDetails = () => {
           <div className="space-y-6">
             {/* Assignment Card */}
             <div className="bg-white rounded-xl shadow-sm p-6">
-              <h2 className="text-lg font-semibold mb-4">👥 Assignment Details</h2>
+              <h2 className="text-lg font-semibold mb-4">
+                👥 Assignment Details
+              </h2>
               <div className="space-y-4">
-                
                 <div className="flex items-center justify-between">
                   <span className="text-gray-600">Category</span>
                   <span className="font-medium">📁 {task.category}</span>
@@ -148,11 +170,12 @@ const TaskDetails = () => {
               <div className="grid grid-cols-2 gap-4">
                 <div className="bg-gray-50 p-4 rounded-lg text-center">
                   <p className="text-sm text-gray-500">Status</p>
-                  <p className="font-medium mt-1">{getStatusStyle().icon} {task.status}</p>
+                  <p className="font-medium mt-1">
+                    {getStatusStyle().icon} {task.status}
+                  </p>
                 </div>
                 <div className="bg-gray-50 p-4 rounded-lg text-center">
                   <p className="text-sm text-gray-500">Priority</p>
-                 
                 </div>
               </div>
             </div>

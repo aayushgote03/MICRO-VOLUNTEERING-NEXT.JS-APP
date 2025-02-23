@@ -23,17 +23,21 @@ export async function POST(request: NextRequest) {
                 taskname: taskname,
                 status: app.status,
                 category : task.category,
-                email: email
+                email: email,
+                id: app._id
             })
         };
         try {
             connectToDatabase();
             const organizer = await UserModel.findOne({email: email});
-            const applications = organizer.application.recieved;
+            const applications = organizer.application;
             
             for (const app of applications) {
+                console.log(app, 'dsc')
                 await processdata(app);
             }
+
+            console.log(appplicants_data, 'vdsvs');
 
             return NextResponse.json({appplicants_data, success: true});
             

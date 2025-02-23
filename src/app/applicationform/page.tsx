@@ -19,7 +19,7 @@ export default function EmailComposer() {
   const [showCopied, setShowCopied] = useState(false);
   const [inspiration, setInspiration] = useState("");
   const [recipient, setRecipient] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [attachments, setAttachments] = useState([]);
   const fileInputRef = useRef(null);
 
@@ -75,8 +75,6 @@ export default function EmailComposer() {
       "Super excited to tell you about...",
     ],
   };
-
-
 
   // Helper functions
   const getInspiration = () => {
@@ -150,37 +148,31 @@ export default function EmailComposer() {
   };
 
   const handleapply = async () => {
+    setLoading(true);
     const email_res = await fetch("/api/sendmail", {
       method: "POST",
       body: JSON.stringify({
-        sender: applicant, 
+        sender: applicant,
         reciever: author,
-        body: emailBody, 
-        subject: subject, 
+        body: emailBody,
+        subject: subject,
       }),
     });
 
-    /*if(email_res.ok) {
-      const res = await fetch(`/api/taskapplication/${task._id}`, {
+    if (email_res.ok) {
+      setLoading(false);
+      const data = await email_res.json();
+      const email_id = data.result._id;
+
+      const res = await fetch(`/api/taskapplication/${task_id}`, {
         method: "PUT",
-        body: JSON.stringify({ applicant: applicant }),
+        body: JSON.stringify({ applicant: applicant, email_id: email_id }),
       });
-    }*/
 
-      if(email_res.ok) {
-        const data = await email_res.json();
-        const email_id = data.result._id;
-
-        const res = await fetch(`/api/taskapplication/${task_id}`, {
-          method: "PUT",
-          body: JSON.stringify({ applicant: applicant, email_id: email_id}),
-        });
-
-        const response = await res.json();
-        alert(response.message);
-      }
-
-    
+      const response = await res.json();
+      alert(response.message);
+      console.log(response);
+    }
   };
 
   // Rest of the component remains the same...
@@ -348,10 +340,16 @@ export default function EmailComposer() {
             <button
               onClick={handleapply}
               className="flex items-center gap-2 px-6 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-              disabled={!emailBody.trim()}
+              disabled={loading || !emailBody.trim()}
             >
-              <Send size={20} />
-              Send with Magic
+              {loading ? (
+                <span>Loading...</span>
+              ) : (
+                <>
+                  <Send size={20} />
+                  Send with Magic
+                </>
+              )}
             </button>
           </div>
 
