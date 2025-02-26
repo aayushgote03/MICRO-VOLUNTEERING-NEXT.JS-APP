@@ -4,14 +4,23 @@ import TaskModel from "@/lib/Modals/taskschema";
 import UserModel from "@/lib/Modals/userschema";
 import { NextRequest, NextResponse } from "next/server";
 
+interface ApplicantData {
+  applicant_name: string;
+  taskname: string;
+  status: string;
+  category: string;
+  email: any;  // or proper email model type
+  id: string;
+}
+
 export async function POST(request: NextRequest) {
     try {
         const payload = await request.json();
         console.log(payload);
         const email = payload.organizer_email;
-        let appplicants_data = [];
+        let appplicants_data: ApplicantData[] = [];
 
-        async function processdata(app) {
+        async function processdata(app: any) {
             connectToDatabase();
             const applicant = await UserModel.findById(app.applicant_id);
             const applicant_name = applicant.username;

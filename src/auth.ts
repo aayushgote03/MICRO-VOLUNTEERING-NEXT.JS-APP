@@ -26,8 +26,8 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
         console.log(user);
         if (user) {
             const isMatch = await bcrypt.compare(
-                credentials.password,
-                user.password
+                credentials.password as string,
+                user.password as string
             );
 
             if (isMatch) {
@@ -40,7 +40,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
             throw new Error("User not found");
         }  
         } catch (error) {
-          throw new Error(error);
+          throw new Error(error instanceof Error ? error.message : 'An unknown error occurred');
         }
 
 

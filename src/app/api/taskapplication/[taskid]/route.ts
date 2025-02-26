@@ -2,10 +2,13 @@ import { NextRequest, NextResponse } from "next/server";
 import connectToDatabase from "@/lib/db";
 import TaskModel from "@/lib/Modals/taskschema";
 import UserModel from "@/lib/Modals/userschema";
-export async function PUT(request: NextRequest, { params }) {
-  
-  let taskid = await params;
-  taskid = taskid.taskid;
+
+interface Params {
+  taskid: string;
+}
+
+export async function PUT(request: NextRequest, { params }: { params: Params }) {
+  const { taskid } = params;
   const payload = await request.json();
 
   console.log(payload);

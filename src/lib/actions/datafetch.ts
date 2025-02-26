@@ -1,6 +1,6 @@
 'use server' 
-import { NextRequest } from "next/server";
-export async function gettasks(url: NextRequest) {
+
+export async function gettasks(url: string) {
     try {
         const URL = url;
         const res = await fetch(`${URL}/api/gettasks`);

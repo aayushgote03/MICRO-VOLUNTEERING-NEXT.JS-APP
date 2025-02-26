@@ -6,9 +6,8 @@ import emailModel from "@/lib/Modals/emailschema";
 export async function POST(request: NextRequest) {
     const {sender, reciever, body, subject} = await request.json();
     const utcDate = new Date();
-    let createdAt = new Date(utcDate.getTime() + 5.5 * 60 * 60 * 1000);
-    createdAt = await createdAt.toISOString();
-    const received_time = createdAt;
+    const createdAt = new Date(utcDate.getTime() + 5.5 * 60 * 60 * 1000);
+    const received_time = createdAt.toISOString();
 
     try {
         connectToDatabase();

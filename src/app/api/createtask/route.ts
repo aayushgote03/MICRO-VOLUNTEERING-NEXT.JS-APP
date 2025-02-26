@@ -5,10 +5,9 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {
     let payload = await request.json();
-    const {user, taskName, description, category, deadline, status, inactiveMessage, imageurl, oftype} = payload;
+    const {user, taskName, description, category, deadline, status, inactiveMessage, imageurl, oftype, capacity } = payload;
     const utcDate = new Date();
-    let createdAt = new Date(utcDate.getTime() + 5.5 * 60 * 60 * 1000);
-    createdAt = createdAt.toISOString();
+    const createdAt = new Date(utcDate.getTime() + 5.5 * 60 * 60 * 1000);
     const newtask = {
         user, 
         taskName,
@@ -17,9 +16,10 @@ export async function POST(request: NextRequest) {
         deadline,
         status,
         inactiveMessage,
-        createdAt,
+        createdAt: createdAt.toISOString(),
         imageurl,
-        oftype
+        oftype,
+        capacity
     }
     connectToDatabase();
     let task = new TaskModel(newtask);

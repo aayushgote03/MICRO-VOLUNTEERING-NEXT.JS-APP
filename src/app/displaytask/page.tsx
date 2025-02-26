@@ -3,12 +3,14 @@ import React, { useEffect, useState } from "react";
 import { FaCalendarAlt } from "react-icons/fa";
 import { useSearchParams } from "next/navigation";
 
+type StatusKey = 'active' | 'inactive';
+
 const TaskDetails = () => {
   const [applied, setApplied] = useState(false);
   const searchParams = useSearchParams();
   const userData = searchParams.get("userData");
   const user = searchParams.get("user");
-  const [loading, setloading] = useState(false);
+  const [loading, setloading] = useState(true);
 
   const task = userData ? JSON.parse(userData) : null;
   console.log(task);
@@ -34,7 +36,8 @@ const TaskDetails = () => {
   };
 
   const getStatusStyle = () => {
-    return statusConfig[task?.status?.toLowerCase()] || statusConfig.inactive;
+    const status = (task?.status?.toLowerCase() || 'inactive') as StatusKey;
+    return statusConfig[status];
   };
 
   useEffect(() => {
@@ -91,7 +94,7 @@ const TaskDetails = () => {
   ) : !applied ? (
     <a
       className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors gap-2"
-      href={`/applicationform?subject=${encodeURIComponent(task.taskName)}&author=${encodeURIComponent(task.user)}&applicant=${encodeURIComponent(user)}&task_id=${encodeURIComponent(task._id)}`}
+      href={`/applicationform?subject=${encodeURIComponent(task.taskName)}&author=${encodeURIComponent(task.user)}&applicant=${encodeURIComponent(user || '')}&task_id=${encodeURIComponent(task._id)}`}
       target="_blank"
       rel="noopener noreferrer"
     >
@@ -141,9 +144,9 @@ const TaskDetails = () => {
                 alt="Task visualization"
                 className="w-full h-64 object-cover rounded-lg"
                 onError={(e) => {
-                  e.target.src =
-                    "https://images.unsplash.com/photo-1557683311-eac922347aa1?ixlib=rb-4.0.3";
-                  e.target.alt = "Fallback task image";
+                  const img = e.target as HTMLImageElement;
+                  img.src = "https://images.unsplash.com/photo-1557683311-eac922347aa1?ixlib=rb-4.0.3";
+                  img.alt = "Fallback task image";
                 }}
               />
             </div>

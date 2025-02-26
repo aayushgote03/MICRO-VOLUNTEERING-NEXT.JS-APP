@@ -8,20 +8,22 @@ import {
   Copy,
   User,
   AtSign,
-  Paperclip,
-  X,
 } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 
+type MoodType = 'professional' | 'friendly' | 'formal' | 'casual' | 'excited';
+
+interface Recipient {
+  name: string;
+}
+
 export default function EmailComposer() {
   const [emailBody, setEmailBody] = useState("");
-  const [mood, setMood] = useState("professional");
+  const [mood, setMood] = useState<MoodType>("professional");
   const [showCopied, setShowCopied] = useState(false);
   const [inspiration, setInspiration] = useState("");
-  const [recipient, setRecipient] = useState(null);
+  const [recipient, setRecipient] = useState<Recipient | null>(null);
   const [loading, setLoading] = useState(false);
-  const [attachments, setAttachments] = useState([]);
-  const fileInputRef = useRef(null);
 
   const searchParams = useSearchParams();
   const emailid = searchParams.get("emailid");
@@ -96,7 +98,7 @@ export default function EmailComposer() {
     setTimeout(() => setShowCopied(false), 2000);
   };
 
-  const insertQuote = (quote) => {
+  const insertQuote = (quote: string) => {
     const personalizedQuote = recipient?.name
       ? quote.replace("you", recipient.name)
       : quote;
@@ -107,44 +109,6 @@ export default function EmailComposer() {
       }
       return `${prevBody}\n\n${personalizedQuote}`;
     });
-  };
-
-  const handleFileSelect = (e) => {
-    const files = Array.from(e.target.files);
-    const newAttachments = files.map((file) => ({
-      file,
-      id: Math.random().toString(36).substr(2, 9),
-      name: file.name,
-      size: formatFileSize(file.size),
-      type: file.type,
-    }));
-
-    setAttachments((prev) => [...prev, ...newAttachments]);
-    if (fileInputRef.current) {
-      fileInputRef.current.value = "";
-    }
-  };
-
-  const removeAttachment = (id) => {
-    setAttachments((prev) => prev.filter((attachment) => attachment.id !== id));
-  };
-
-  const formatFileSize = (bytes) => {
-    if (bytes === 0) return "0 Bytes";
-    const k = 1024;
-    const sizes = ["Bytes", "KB", "MB", "GB"];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
-  };
-
-  const getFileIcon = (type) => {
-    if (type.startsWith("image/")) return "🖼️";
-    if (type.startsWith("video/")) return "🎥";
-    if (type.startsWith("audio/")) return "🎵";
-    if (type.includes("pdf")) return "📄";
-    if (type.includes("document")) return "📝";
-    if (type.includes("spreadsheet")) return "📊";
-    return "📎";
   };
 
   const handleapply = async () => {
@@ -175,7 +139,6 @@ export default function EmailComposer() {
     }
   };
 
-  // Rest of the component remains the same...
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 p-8">
       <div className="max-w-2xl mx-auto space-y-6">
@@ -209,7 +172,7 @@ export default function EmailComposer() {
             {Object.entries(moodEmojis).map(([moodName, emoji]) => (
               <button
                 key={moodName}
-                onClick={() => setMood(moodName)}
+                onClick={() => setMood(moodName as MoodType)}
                 className={`px-4 py-2 rounded-full transition-all ${
                   mood === moodName
                     ? "bg-purple-600 text-white"
@@ -236,66 +199,6 @@ export default function EmailComposer() {
                 </button>
               ))}
             </div>
-          </div>
-
-          {/* File Attachment Section */}
-          <div className="space-y-3">
-            <div className="flex items-center gap-2">
-              <input
-                type="file"
-                ref={fileInputRef}
-                onChange={handleFileSelect}
-                multiple
-                className="hidden"
-                id="file-upload"
-              />
-              <label
-                htmlFor="file-upload"
-                className="flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors cursor-pointer"
-              >
-                <Paperclip size={20} />
-                Add Attachments
-              </label>
-              {attachments.length > 0 && (
-                <span className="text-sm text-gray-500">
-                  {attachments.length} file(s) attached
-                </span>
-              )}
-            </div>
-
-            {attachments.length > 0 && (
-              <div className="bg-gray-50 rounded-lg p-3 space-y-2">
-                {attachments.map((attachment) => (
-                  <div
-                    key={attachment.id}
-                    className="flex items-center justify-between bg-white p-2 rounded-lg border border-gray-200"
-                  >
-                    <div className="flex items-center gap-2">
-                      <span className="text-xl">
-                        {getFileIcon(attachment.type)}
-                      </span>
-                      <div>
-                        <div className="text-sm font-medium truncate max-w-xs">
-                          {attachment.name}
-                        </div>
-                        <div className="text-xs text-gray-500">
-                          {attachment.size}
-                        </div>
-                      </div>
-                    </div>
-                    <button
-                      onClick={() => removeAttachment(attachment.id)}
-                      className="p-1 hover:bg-red-50 rounded-full group"
-                    >
-                      <X
-                        size={16}
-                        className="text-gray-400 group-hover:text-red-500"
-                      />
-                    </button>
-                  </div>
-                ))}
-              </div>
-            )}
           </div>
 
           <div className="relative">
@@ -369,7 +272,6 @@ export default function EmailComposer() {
         <div className="text-center text-sm text-purple-600">
           Characters: {emailBody.length} • Words:{" "}
           {emailBody.trim() ? emailBody.trim().split(/\s+/).length : 0}
-          {attachments.length > 0 && ` • Attachments: ${attachments.length}`}
         </div>
       </div>
     </div>

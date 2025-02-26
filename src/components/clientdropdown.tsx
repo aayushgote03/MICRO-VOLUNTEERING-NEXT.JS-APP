@@ -1,7 +1,11 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 
-const OrganizerDropdown = ({user}) => {
+interface OrganizerDropdownProps {
+  user: string;
+}
+
+const OrganizerDropdown = ({user}: OrganizerDropdownProps) => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (

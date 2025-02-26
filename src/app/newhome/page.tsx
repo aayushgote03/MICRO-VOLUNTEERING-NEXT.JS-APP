@@ -6,14 +6,30 @@ import LogoutButton from "@/components/Logoutbutton";
 import Head from "next/head"; // Import Head component to update the page title or favicon
 import OrganizerDropdown from "@/components/organizerdropdown";
 import { gettasks } from "@/lib/actions/datafetch";
+
+interface Task {
+  _id: string;
+  taskName: string;
+  description: string;
+  category: string;
+  deadline: string;
+  status: string;
+  user: string;
+  oftype: string;
+}
+
+interface User {
+  email: string;
+}
+
 export default function Home() {
   const [theme, setTheme] = useState("dark");
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [tasks, setTasks] = useState([]);
+  const [tasks, setTasks] = useState<Task[]>([]);
   const [users, setUsers] = useState([]);
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const storedTheme = localStorage.getItem("theme") || "dark";
@@ -41,7 +57,7 @@ export default function Home() {
         const userData = await userRes.json();
 
         const filtertask = await userTasks.filter(
-          (task) => task.oftype === "createtask"
+          (task: Task) => task.oftype === "createtask"
         );
         const userlist = await usersRes.json();
 
@@ -49,7 +65,7 @@ export default function Home() {
         setUsers(userlist);
         setTasks(filtertask);
       } catch (err) {
-        setError(err.message);
+        setError(err instanceof Error ? err.message : 'An unknown error occurred');
       } finally {
         setLoading(false);
       }
@@ -67,11 +83,12 @@ export default function Home() {
 
   // Close menu when clicking outside
   useEffect(() => {
-    const handleClickOutside = (e) => {
+    const handleClickOutside = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
       if (
         isMenuOpen &&
-        !e.target.closest(".mobile-menu") &&
-        !e.target.closest(".hamburger-button")
+        !target.closest(".mobile-menu") &&
+        !target.closest(".hamburger-button")
       ) {
         setIsMenuOpen(false);
       }
@@ -121,7 +138,7 @@ export default function Home() {
                 hi <span className="font-bold">{user?.email}</span>
               </div>
               <div className="relative">
-                <OrganizerDropdown user={user.email}/>
+                <OrganizerDropdown user={user?.email || ''}/>
 
                 {/* Dropdown Menu */}
               </div>
@@ -217,7 +234,7 @@ export default function Home() {
               <div className="flex flex-col space-y-4">
                 <div className="relative">
                   {/* Dropdown Menu */}
-                  <OrganizerDropdown />
+                  <OrganizerDropdown user={user?.email || ''} />
                 </div>
 
                 <Link
@@ -282,7 +299,7 @@ export default function Home() {
               <div className="grid gap-6 grid-cols-1 md:grid-cols-2">
                 {tasks.length > 0 ? (
                   tasks.map((task, index) => {
-                    const formatDate = (isoDate) => {
+                    const formatDate = (isoDate: string) => {
                       const date = new Date(isoDate);
                       const day = date.getDate().toString().padStart(2, "0");
                       const month = (date.getMonth() + 1)
@@ -343,7 +360,7 @@ export default function Home() {
                               pathname: "/displaytask",
                               query: {
                                 userData: JSON.stringify(task),
-                                user: user.email,
+                                user: user?.email || '',
                               },
                             }}
                             className="bg-black dark:bg-white text-white dark:text-black py-2 px-4 rounded hover:bg-gray-700 dark:hover:bg-gray-200 w-full"

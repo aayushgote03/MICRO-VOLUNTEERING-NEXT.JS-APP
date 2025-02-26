@@ -27,7 +27,7 @@ const LoginPage: React.FC = () => {
       setError(res.error);
     }
     else{
-      router.push('/home');
+      router.push('/newhome');
     }
   };
 

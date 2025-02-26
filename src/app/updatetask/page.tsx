@@ -1,6 +1,6 @@
 "use client";
 import Head from "next/head";
-import { useState, useEffect } from "react";
+import { useState, useEffect, FormEvent } from "react";
 import { redirect } from "next/navigation";
 import { UploadButton } from "@/utils/uploadthing";
 import { useSearchParams } from "next/navigation";
@@ -26,7 +26,7 @@ export default function UpdateTask() {
   
   const [user, setUser] = useState(task.user);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
   const [taskName, setTaskName] = useState(task.taskName);
   const [description, setDescription] = useState(task.description);
   const [category, setCategory] = useState(task.category);
@@ -42,8 +42,8 @@ export default function UpdateTask() {
         if (!response.ok) throw new Error("Failed to fetch data");
         const data = await response.json();
         setUser(data.user.email);
-      } catch (err) {
-        setError(err.message);
+      } catch (error) {
+        setError(error instanceof Error ? error.message : 'An unknown error occurred');
       } finally {
         setLoading(false);
       }
@@ -62,9 +62,9 @@ export default function UpdateTask() {
     redirect("/");
   }
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    let oftype = e.nativeEvent.submitter.name;
+    let oftype = (e.nativeEvent as any).submitter.name;
 
     let result = await fetch(`/api/updatetask/${task._id}`, {
       method: "PUT",
@@ -131,7 +131,7 @@ export default function UpdateTask() {
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 transition-all"
-                rows="4"
+                
                 required
               />
             </div>
@@ -216,7 +216,7 @@ export default function UpdateTask() {
                   value={inactiveMessage}
                   onChange={(e) => setInactiveMessage(e.target.value)}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 transition-all"
-                  rows="3"
+                
                 />
               </div>
             )}

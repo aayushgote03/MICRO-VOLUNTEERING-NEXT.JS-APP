@@ -5,25 +5,57 @@ import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { useSearchParams } from "next/navigation";
 import { useState, useEffect } from "react";
 
+interface Application {
+  id: string;
+  status: string;
+  email: {
+    received_time: string;
+  };
+  applicant_name: string;
+  category: string;
+  taskname: string;
+}
+
+type StatusType = 'Pending' | 'Reviewed' | 'Rejected';
+type StatusEmojiType = 'pending' | 'approve' | 'Rejected';
+
+type CategoryType = 
+  | "Environmental Conservation"
+  | "Education and Tutoring"
+  | "Healthcare and Wellness"
+  | "Social"
+  | "Animal Welfare"
+  | "Arts and Culture"
+  | "Advocacy and Campaigns"
+  | "Technology and Innovation"
+  | "Sports and Recreation"
+  | "Community Building"
+  | "Youth Development";
+
 const ApplicationsReceived = () => {
   const searchParams = useSearchParams();
   const organizerName = searchParams.get("user") || "Anonymous User";
-  const [applications, setapplications] = useState([]);
+  const [applications, setapplications] = useState<Application[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchdata = async () => {
-      const res = await fetch("/api/getorganizerdata", {
-        method: "POST",
-        body: JSON.stringify({
-          organizer_email: organizerName,
-        }),
-        cache: 'force-cache'
-      });
+      try {
+        const res = await fetch("/api/getorganizerdata", {
+          method: "POST",
+          body: JSON.stringify({
+            organizer_email: organizerName,
+          }),
+          cache: 'force-cache'
+        });
 
-      const response = await res.json();
-      console.log(response);
-      const mydata = response.appplicants_data;
-      setapplications(mydata);
+        const response = await res.json();
+        console.log(response);
+        const mydata = response.appplicants_data;
+        setapplications(mydata);
+      } finally {
+        setIsLoading(false);
+      }
     };
     fetchdata();
   }, []);
@@ -31,7 +63,7 @@ const ApplicationsReceived = () => {
   // Sample data with organizer information
 
   // Format timestamp to readable date and time
-  const formatDateTime = (timestamp) => {
+  const formatDateTime = (timestamp: string) => {
     const date = new Date(timestamp);
     return {
       date: date.toLocaleDateString('en-US', { 
@@ -57,7 +89,7 @@ const ApplicationsReceived = () => {
   
 
   // Get status style
-  const getStatusStyle = (status) => {
+  const getStatusStyle = (status: StatusType) => {
     const styles = {
       Pending: "bg-yellow-100 text-yellow-800",
       Reviewed: "bg-green-100 text-green-800",
@@ -67,7 +99,7 @@ const ApplicationsReceived = () => {
   };
 
   // Get status emoji
-  const getStatusEmoji = (status) => {
+  const getStatusEmoji = (status: StatusEmojiType) => {
     const emojis = {
       pending: "⏳",
       approve: "✅",
@@ -92,12 +124,12 @@ const ApplicationsReceived = () => {
     Default: "📋",
   };
 
-  const getBadgeColor = (category) => {
+  const getBadgeColor = (category: CategoryType) => {
     const colors = {
       "Environmental Conservation": "bg-green-100 text-green-800",
       "Education and Tutoring": "bg-blue-100 text-blue-800",
       "Healthcare and Wellness": "bg-red-100 text-red-800",
-      "Social Services": "bg-purple-100 text-purple-800",
+      "Social": "bg-purple-100 text-purple-800",
       "Animal Welfare": "bg-yellow-100 text-yellow-800",
       "Arts and Culture": "bg-pink-100 text-pink-800",
       "Advocacy and Campaigns": "bg-orange-100 text-orange-800",
@@ -179,72 +211,80 @@ const ApplicationsReceived = () => {
         </div>
 
         {/* Applications Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {applications.map((application) => {
-            const { date, time } = formatDateTime(
-              application.email.received_time
-            );
-            return (
-              <Card
-                key={application.id}
-                className="bg-white bg-opacity-95 transform transition-all duration-300 hover:scale-105 hover:shadow-2xl"
-              >
-                <CardHeader>
-                  <div className="flex justify-between items-center mb-2">
-                    <span
-                      className={`px-3 py-1 rounded-full text-sm font-semibold ${getStatusStyle(
-                        application.status
-                      )}`}
-                    >
-                      {getStatusEmoji(application.status)} {application.status}
-                    </span>
-                    <div className="text-sm text-gray-500 text-right">
-                      <div>📅 {date}</div>
-                      <div>🕒 {time}</div>
+        {isLoading ? (
+          <div className="flex justify-center items-center h-64">
+            <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-white"></div>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {applications.map((application) => {
+              const { date, time } = formatDateTime(
+                application.email.received_time
+              );
+              return (
+                <Card
+                  key={application.id}
+                  className="bg-white bg-opacity-95 transform transition-all duration-300 hover:scale-105 hover:shadow-2xl"
+                >
+                  <CardHeader>
+                    <div className="flex justify-between items-center mb-2">
+                      <span
+                        className={`px-3 py-1 rounded-full text-sm font-semibold ${getStatusStyle(
+                          application.status as StatusType
+                        )}`}
+                      >
+                        {getStatusEmoji(application.status as StatusEmojiType)} {application.status}
+                      </span>
+                      <div className="text-sm text-gray-500 text-right">
+                        <div>📅 {date}</div>
+                        <div>🕒 {time}</div>
+                      </div>
                     </div>
-                  </div>
-                  <div>
-                    <h2 className="text-xl font-bold text-gray-800">
-                      👤 {application.applicant_name}
-                    </h2>
-                    <p className="text-sm text-gray-600">
-                      🎨 Created by: {organizerName}
-                    </p>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <div className="mb-4">
-                    <span
-                      className={`inline-block px-3 py-1 rounded-full text-sm font-semibold mb-2 ${getBadgeColor(
-                        application.category
-                      )}`}
+                    <div>
+                      <h2 className="text-xl font-bold text-gray-800">
+                        👤 {application.applicant_name}
+                      </h2>
+                      <p className="text-sm text-gray-600">
+                        🎨 Created by: {organizerName}
+                      </p>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="mb-4">
+                      <span
+                        className={`inline-block px-3 py-1 rounded-full text-sm font-semibold mb-2 ${getBadgeColor(
+                          application.category as CategoryType
+                        )}`}
+                      >
+                        {categoryEmojis[application.category as CategoryType] ||
+                          categoryEmojis.Default}{" "}
+                        {application.category}
+                      </span>
+                      <p className="text-lg font-semibold text-purple-600">
+                        {application.taskname}
+                      </p>
+                    </div>
+                    <Link
+                      href={{
+                        pathname: "/email",
+                        query: {
+                          email: JSON.stringify(application.email),
+                          organizername: organizerName,
+                          application_id: application.id
+                        },
+                      }}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="block w-full text-center bg-gradient-to-r from-indigo-500 to-purple-500 text-white py-2 rounded-lg font-semibold hover:from-indigo-600 hover:to-purple-600 transition-colors duration-300"
                     >
-                      {categoryEmojis[application.category] ||
-                        categoryEmojis.Default}{" "}
-                      {application.category}
-                    </span>
-                    <p className="text-lg font-semibold text-purple-600">
-                      {application.taskname}
-                    </p>
-                  </div>
-                  <Link
-                    href={{
-                      pathname: "/email",
-                      query: {
-                        email: JSON.stringify(application.email),
-                        organizername: organizerName,
-                        application_id: application.id
-                      },
-                    }}
-                    className="block w-full text-center bg-gradient-to-r from-indigo-500 to-purple-500 text-white py-2 rounded-lg font-semibold hover:from-indigo-600 hover:to-purple-600 transition-colors duration-300"
-                  >
-                    🔍 View Application
-                  </Link>
-                </CardContent>
-              </Card>
-            );
-          })}
-        </div>
+                      🔍 View Application
+                    </Link>
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
+        )}
       </div>
     </div>
   );

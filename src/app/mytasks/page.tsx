@@ -5,18 +5,32 @@ import { redirect } from "next/navigation";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
+interface Task {
+  _id: string;
+  user: string;
+  taskName: string;
+  description: string;
+  category: string;
+  deadline: string;
+  oftype: string;
+}
+
+interface User {
+  email: string;
+}
+
 export default function MyTasksPage() {
-  const [tasks, setTasks] = useState([]);
-  const [drafts, setDrafts] = useState([]);
-  const [originalTasks, setOriginalTasks] = useState([]);
+  const [tasks, setTasks] = useState<Task[]>([]);
+  const [drafts, setDrafts] = useState<Task[]>([]);
+  const [originalTasks, setOriginalTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
-  const [user, setUser] = useState(null);
-  const [error, setError] = useState(null);
+  const [user, setUser] = useState<User | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const [isSorted, setIsSorted] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [taskToDelete, setTaskToDelete] = useState(null);
+  const [taskToDelete, setTaskToDelete] = useState<string | null>(null);
   const [viewDrafts, setViewDrafts] = useState(false); // New state for toggling drafts view
-  const [originaldrafts, setoriginaldrafts] = useState([]);
+  const [originaldrafts, setoriginaldrafts] = useState<Task[]>([]);
 
   const router = useRouter();
 
@@ -36,17 +50,17 @@ export default function MyTasksPage() {
         }
         const data = await response.json();
         const userfilterdata = data.filter(
-          (person) => person.user === userData.user.email
+          (person: Task) => person.user === userData.user.email
         );
-        const filterdata = userfilterdata.filter((task) => task.oftype === 'createtask');
-        const draftdata = userfilterdata.filter((draft) => draft.oftype === 'draft');
+        const filterdata = userfilterdata.filter((task: Task) => task.oftype === 'createtask');
+        const draftdata = userfilterdata.filter((draft: Task) => draft.oftype === 'draft');
         setTasks(filterdata);
         setDrafts(draftdata);
         setOriginalTasks(filterdata);
         setoriginaldrafts(draftdata);
       } catch (err) {
         console.error("Error:", err);
-        setError(err.message);
+        setError(err instanceof Error ? err.message : 'An unknown error occurred');
       } finally {
         setLoading(false);
       }
@@ -77,13 +91,13 @@ export default function MyTasksPage() {
     } else {
       if(viewDrafts) {
         const sortedTasks = [...drafts].sort(
-          (a, b) => new Date(a.deadline) - new Date(b.deadline)
+          (a, b) => new Date(a.deadline).getTime() - new Date(b.deadline).getTime()
         );
         setDrafts(sortedTasks);
       }
       else{
       const sortedTasks = [...tasks].sort(
-        (a, b) => new Date(a.deadline) - new Date(b.deadline)
+        (a, b) => new Date(a.deadline).getTime() - new Date(b.deadline).getTime()
       );
       setTasks(sortedTasks);
     }
