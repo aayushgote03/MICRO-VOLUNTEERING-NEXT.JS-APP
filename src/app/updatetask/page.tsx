@@ -65,9 +65,12 @@ export default function UpdateTask() {
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     let oftype = (e.nativeEvent as any).submitter.name;
-
+    
     let result = await fetch(`/api/updatetask/${task._id}`, {
       method: "PUT",
+      headers: {
+        'Content-Type': 'application/json'
+      },
       body: JSON.stringify({
         user,
         taskName,
@@ -80,7 +83,10 @@ export default function UpdateTask() {
         oftype
       }),
     });
-    result = await result.json();
+    
+    if (result.ok) {
+      redirect('/dashboard');
+    }
   };
 
   return (
@@ -224,7 +230,7 @@ export default function UpdateTask() {
             <div className="flex gap-4 pt-4">
               <button
                 type="submit"
-                name="updatetask"
+                name="createtask"
                 className="flex-1 bg-gradient-to-r from-amber-500 to-orange-500 text-white py-3 px-6 rounded-lg hover:from-amber-600 hover:to-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 transition-all transform hover:scale-105"
               >
                 ✨ Update Task
