@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { Suspense } from "react";
 import Link from "next/link";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { useSearchParams } from "next/navigation";
@@ -32,7 +32,7 @@ type CategoryType =
   | "Community Building"
   | "Youth Development";
 
-const ApplicationsReceived = () => {
+const ApplicationContent = () => {
   const searchParams = useSearchParams();
   const organizerName = searchParams.get("user") || "Anonymous User";
   const [applications, setapplications] = useState<Application[]>([]);
@@ -142,9 +142,13 @@ const ApplicationsReceived = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 p-8">
-      <div className="max-w-6xl mx-auto">
-        {/* User Info Section */}
+    <div className="max-w-6xl mx-auto">
+      {/* User Info Section */}
+      <Suspense fallback={
+        <div className="flex justify-center items-center h-64">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-white"></div>
+        </div>
+      }>
         <div className="bg-white bg-opacity-90 rounded-2xl p-6 mb-6 shadow-xl">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
@@ -174,118 +178,132 @@ const ApplicationsReceived = () => {
             </div>
           </div>
         </div>
+      </Suspense>
 
-        {/* Stats Section */}
-        <div className="bg-white bg-opacity-90 rounded-2xl p-8 mb-8 shadow-xl">
-          <h1 className="text-4xl font-bold text-gray-800 mb-4">
-            📬 Applications Dashboard
-          </h1>
-          <div className="flex flex-wrap gap-4">
-            <div className="bg-indigo-100 rounded-xl p-4">
-              <p className="text-indigo-600 font-semibold">
-                📊 Total Applications
-              </p>
-              <p className="text-3xl font-bold text-indigo-800">
-                {applications.length}
-              </p>
-            </div>
-            <div className="bg-purple-100 rounded-xl p-4">
-              <p className="text-purple-600 font-semibold">⏳ Pending</p>
-              <p className="text-3xl font-bold text-purple-800">
-                {applications.filter((app) => app.status === "pending").length}
-              </p>
-            </div>
-            <div className="bg-green-100 rounded-xl p-4">
-              <p className="text-green-600 font-semibold">✅ Approved</p>
-              <p className="text-3xl font-bold text-green-800">
-                {applications.filter((app) => app.status === "approve").length}
-              </p>
-            </div>
-            <div className="bg-red-100 rounded-xl p-4">
-              <p className="text-red-600 font-semibold">❌ Rejected</p>
-              <p className="text-3xl font-bold text-red-800">
-                {applications.filter((app) => app.status === "Rejected").length}
-              </p>
-            </div>
+      {/* Stats Section */}
+      <div className="bg-white bg-opacity-90 rounded-2xl p-8 mb-8 shadow-xl">
+        <h1 className="text-4xl font-bold text-gray-800 mb-4">
+          📬 Applications Dashboard
+        </h1>
+        <div className="flex flex-wrap gap-4">
+          <div className="bg-indigo-100 rounded-xl p-4">
+            <p className="text-indigo-600 font-semibold">
+              📊 Total Applications
+            </p>
+            <p className="text-3xl font-bold text-indigo-800">
+              {applications.length}
+            </p>
+          </div>
+          <div className="bg-purple-100 rounded-xl p-4">
+            <p className="text-purple-600 font-semibold">⏳ Pending</p>
+            <p className="text-3xl font-bold text-purple-800">
+              {applications.filter((app) => app.status === "pending").length}
+            </p>
+          </div>
+          <div className="bg-green-100 rounded-xl p-4">
+            <p className="text-green-600 font-semibold">✅ Approved</p>
+            <p className="text-3xl font-bold text-green-800">
+              {applications.filter((app) => app.status === "approve").length}
+            </p>
+          </div>
+          <div className="bg-red-100 rounded-xl p-4">
+            <p className="text-red-600 font-semibold">❌ Rejected</p>
+            <p className="text-3xl font-bold text-red-800">
+              {applications.filter((app) => app.status === "Rejected").length}
+            </p>
           </div>
         </div>
-
-        {/* Applications Grid */}
-        {isLoading ? (
-          <div className="flex justify-center items-center h-64">
-            <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-white"></div>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {applications.map((application) => {
-              const { date, time } = formatDateTime(
-                application.email.received_time
-              );
-              return (
-                <Card
-                  key={application.id}
-                  className="bg-white bg-opacity-95 transform transition-all duration-300 hover:scale-105 hover:shadow-2xl"
-                >
-                  <CardHeader>
-                    <div className="flex justify-between items-center mb-2">
-                      <span
-                        className={`px-3 py-1 rounded-full text-sm font-semibold ${getStatusStyle(
-                          application.status as StatusType
-                        )}`}
-                      >
-                        {getStatusEmoji(application.status as StatusEmojiType)} {application.status}
-                      </span>
-                      <div className="text-sm text-gray-500 text-right">
-                        <div>📅 {date}</div>
-                        <div>🕒 {time}</div>
-                      </div>
-                    </div>
-                    <div>
-                      <h2 className="text-xl font-bold text-gray-800">
-                        👤 {application.applicant_name}
-                      </h2>
-                      <p className="text-sm text-gray-600">
-                        🎨 Created by: {organizerName}
-                      </p>
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="mb-4">
-                      <span
-                        className={`inline-block px-3 py-1 rounded-full text-sm font-semibold mb-2 ${getBadgeColor(
-                          application.category as CategoryType
-                        )}`}
-                      >
-                        {categoryEmojis[application.category as CategoryType] ||
-                          categoryEmojis.Default}{" "}
-                        {application.category}
-                      </span>
-                      <p className="text-lg font-semibold text-purple-600">
-                        {application.taskname}
-                      </p>
-                    </div>
-                    <Link
-                      href={{
-                        pathname: "/email",
-                        query: {
-                          email: JSON.stringify(application.email),
-                          organizername: organizerName,
-                          application_id: application.id
-                        },
-                      }}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="block w-full text-center bg-gradient-to-r from-indigo-500 to-purple-500 text-white py-2 rounded-lg font-semibold hover:from-indigo-600 hover:to-purple-600 transition-colors duration-300"
-                    >
-                      🔍 View Application
-                    </Link>
-                  </CardContent>
-                </Card>
-              );
-            })}
-          </div>
-        )}
       </div>
+
+      {/* Applications Grid */}
+      {isLoading ? (
+        <div className="flex justify-center items-center h-64">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-white"></div>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {applications.map((application) => {
+            const { date, time } = formatDateTime(
+              application.email.received_time
+            );
+            return (
+              <Card
+                key={application.id}
+                className="bg-white bg-opacity-95 transform transition-all duration-300 hover:scale-105 hover:shadow-2xl"
+              >
+                <CardHeader>
+                  <div className="flex justify-between items-center mb-2">
+                    <span
+                      className={`px-3 py-1 rounded-full text-sm font-semibold ${getStatusStyle(
+                        application.status as StatusType
+                      )}`}
+                    >
+                      {getStatusEmoji(application.status as StatusEmojiType)} {application.status}
+                    </span>
+                    <div className="text-sm text-gray-500 text-right">
+                      <div>📅 {date}</div>
+                      <div>🕒 {time}</div>
+                    </div>
+                  </div>
+                  <div>
+                    <h2 className="text-xl font-bold text-gray-800">
+                      👤 {application.applicant_name}
+                    </h2>
+                    <p className="text-sm text-gray-600">
+                      🎨 Created by: {organizerName}
+                    </p>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="mb-4">
+                    <span
+                      className={`inline-block px-3 py-1 rounded-full text-sm font-semibold mb-2 ${getBadgeColor(
+                        application.category as CategoryType
+                      )}`}
+                    >
+                      {categoryEmojis[application.category as CategoryType] ||
+                        categoryEmojis.Default}{" "}
+                      {application.category}
+                    </span>
+                    <p className="text-lg font-semibold text-purple-600">
+                      {application.taskname}
+                    </p>
+                  </div>
+                  <Link
+                    href={{
+                      pathname: "/email",
+                      query: {
+                        email: JSON.stringify(application.email),
+                        organizername: organizerName,
+                        application_id: application.id
+                      },
+                    }}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block w-full text-center bg-gradient-to-r from-indigo-500 to-purple-500 text-white py-2 rounded-lg font-semibold hover:from-indigo-600 hover:to-purple-600 transition-colors duration-300"
+                  >
+                    🔍 View Application
+                  </Link>
+                </CardContent>
+              </Card>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+};
+
+const ApplicationsReceived = () => {
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 p-8">
+      <Suspense fallback={
+        <div className="flex justify-center items-center h-64">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-white"></div>
+        </div>
+      }>
+        <ApplicationContent />
+      </Suspense>
     </div>
   );
 };

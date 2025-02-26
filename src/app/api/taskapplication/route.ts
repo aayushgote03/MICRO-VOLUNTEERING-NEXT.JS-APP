@@ -3,13 +3,12 @@ import connectToDatabase from "@/lib/db";
 import TaskModel from "@/lib/Modals/taskschema";
 import UserModel from "@/lib/Modals/userschema";
 
-interface Params {
-  taskid: string;
-}
 
-export async function PUT(request: NextRequest, { params }: { params: Params }) {
-  const { taskid } = params;
+
+export async function PUT(request: NextRequest) {
+  
   const payload = await request.json();
+  const taskid = payload.taskid;
 
   console.log(payload);
 

@@ -1,6 +1,6 @@
 // app/compose/page.js
 "use client";
-import { useState, useRef } from "react";
+import { useState, Suspense } from "react";
 import {
   Send,
   Sparkles,
@@ -18,6 +18,14 @@ interface Recipient {
 }
 
 export default function EmailComposer() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <EmailComposerContent />
+    </Suspense>
+  );
+}
+
+function EmailComposerContent() {
   const [emailBody, setEmailBody] = useState("");
   const [mood, setMood] = useState<MoodType>("professional");
   const [showCopied, setShowCopied] = useState(false);
@@ -128,9 +136,9 @@ export default function EmailComposer() {
       const data = await email_res.json();
       const email_id = data.result._id;
 
-      const res = await fetch(`/api/taskapplication/${task_id}`, {
+      const res = await fetch(`/api/taskapplication`, {
         method: "PUT",
-        body: JSON.stringify({ applicant: applicant, email_id: email_id }),
+        body: JSON.stringify({ applicant: applicant, email_id: email_id, taskid: task_id }),
       });
 
       const response = await res.json();

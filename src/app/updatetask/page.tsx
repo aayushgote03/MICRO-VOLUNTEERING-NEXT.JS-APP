@@ -1,6 +1,6 @@
 "use client";
 import Head from "next/head";
-import { useState, useEffect, FormEvent } from "react";
+import { useState, useEffect, FormEvent, Suspense } from "react";
 import { redirect } from "next/navigation";
 import { UploadButton } from "@/utils/uploadthing";
 import { useSearchParams } from "next/navigation";
@@ -20,6 +20,18 @@ const categoryEmojis = {
 };
 
 export default function UpdateTask() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-purple-400 via-pink-500 to-red-500">
+        <div className="text-white text-2xl animate-bounce">Loading... 🎈</div>
+      </div>
+    }>
+      <UpdateTaskContent />
+    </Suspense>
+  );
+}
+
+function UpdateTaskContent() {
   const searchParams = useSearchParams();
   const userData = searchParams.get("userData");
   const task = userData ? JSON.parse(userData) : null;
@@ -66,12 +78,12 @@ export default function UpdateTask() {
     e.preventDefault();
     let oftype = (e.nativeEvent as any).submitter.name;
     
-    let result = await fetch(`/api/updatetask/${task._id}`, {
+    let result = await fetch(`/api/updatetask/`, {
       method: "PUT",
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({
+      body: JSON.stringify({taskdata: {
         user,
         taskName,
         description,
@@ -80,7 +92,8 @@ export default function UpdateTask() {
         status,
         inactiveMessage,
         imageurl,
-        oftype
+        oftype,},
+        taskid: task._id
       }),
     });
     

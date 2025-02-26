@@ -10,24 +10,30 @@ const LoginPage: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState('FINE');
+  const [isLoading, setIsLoading] = useState(false);
 
 
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const res = await signIn('credentials', {
-      redirect: false,
-      email,
-      password,
-    });
+    setIsLoading(true);
+    try {
+      const res = await signIn('credentials', {
+        redirect: false,
+        email,
+        password,
+      });
 
-    if(!!res?.error) {
-      console.log(res.error);
-      setError(res.error);
-    }
-    else{
-      router.push('/newhome');
+      if(!!res?.error) {
+        console.log(res.error);
+        setError(res.error);
+      }
+      else{
+        router.push('/newhome');
+      }
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -70,9 +76,10 @@ const LoginPage: React.FC = () => {
           </div>
           <button
             type="submit"
-            className="w-full px-4 py-2 bg-blue-500 text-white font-semibold rounded-md shadow hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2"
+            disabled={isLoading}
+            className="w-full px-4 py-2 bg-blue-500 text-white font-semibold rounded-md shadow hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            Log In
+            {isLoading ? "Loading..." : "Log In"}
           </button>
         </form>
         <p className="mt-4 text-center text-sm text-gray-600">

@@ -1,5 +1,5 @@
 'use client'
-import React, { useState } from 'react';
+import React, { useState, Suspense } from 'react';
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { User, Clock, Send, CheckCircle2, XCircle, AlertCircle } from "lucide-react";
 import { useSearchParams } from 'next/navigation';
@@ -26,7 +26,7 @@ interface ApiResponse {
   message: string;
 }
 
-const EmailViewer: React.FC = () => {
+const EmailContent: React.FC = () => {
   const [notification, setNotification] = useState<NotificationState>({ 
     show: false, 
     message: '', 
@@ -261,6 +261,14 @@ const EmailViewer: React.FC = () => {
         </CardContent>
       </Card>
     </div>
+  );
+};
+
+const EmailViewer: React.FC = () => {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <EmailContent />
+    </Suspense>
   );
 };
 

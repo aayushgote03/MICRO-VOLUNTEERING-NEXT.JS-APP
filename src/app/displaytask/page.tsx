@@ -1,11 +1,11 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Suspense } from "react";
 import { FaCalendarAlt } from "react-icons/fa";
 import { useSearchParams } from "next/navigation";
 
 type StatusKey = 'active' | 'inactive';
 
-const TaskDetails = () => {
+const TaskDetailsContent = () => {
   const [applied, setApplied] = useState(false);
   const searchParams = useSearchParams();
   const userData = searchParams.get("userData");
@@ -186,6 +186,14 @@ const TaskDetails = () => {
         </div>
       </div>
     </div>
+  );
+};
+
+const TaskDetails = () => {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-gray-50 p-8">Loading...</div>}>
+      <TaskDetailsContent />
+    </Suspense>
   );
 };
 

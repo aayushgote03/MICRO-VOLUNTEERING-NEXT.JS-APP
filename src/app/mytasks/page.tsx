@@ -112,8 +112,9 @@ export default function MyTasksPage() {
     if (!taskToDelete) return;
 
     try {
-      const response = await fetch(`/api/deletetask/${taskToDelete}`, {
+      const response = await fetch(`/api/deletetask`, {
         method: "DELETE",
+        body: JSON.stringify({ taskid: taskToDelete }),
       });
       if (!response.ok) {
         throw new Error("Unable to delete");
