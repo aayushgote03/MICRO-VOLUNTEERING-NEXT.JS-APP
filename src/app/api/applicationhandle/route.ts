@@ -1,5 +1,5 @@
 import connectToDatabase from "@/lib/db";
-import UserModel from "@/lib/Modals/userschema";
+import ApplicationModel from "@/lib/Modals/applicationschema";
 import { NextResponse } from "next/server";
 import { NextRequest } from "next/server";
 
@@ -10,16 +10,12 @@ export async function PUT (req: NextRequest) {
     try {
         connectToDatabase();
 
-    const data = await UserModel.updateMany({
-        email: organizeremail,
-        "application._id": app_id
-    },
-    {
-        "$set": {
-            "application.$.status" : action
-        }
-    } 
-    )
+    if (action === 'approve') {
+        await ApplicationModel.findByIdAndUpdate(app_id, {status: 'approved'});
+    } else if (action === 'reject') {
+        await ApplicationModel.findByIdAndUpdate(app_id, {status: 'rejected'});
+    }
+
         
     } catch (error) {
         console.log(error);

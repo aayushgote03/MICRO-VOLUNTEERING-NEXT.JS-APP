@@ -1,4 +1,5 @@
 import connectToDatabase from "@/lib/db";
+import ApplicationModel from "@/lib/Modals/applicationschema";
 import emailModel from "@/lib/Modals/emailschema";
 import TaskModel from "@/lib/Modals/taskschema";
 import UserModel from "@/lib/Modals/userschema";
@@ -22,7 +23,7 @@ export async function POST(request: NextRequest) {
 
         async function processdata(app: any) {
             connectToDatabase();
-            const applicant = await UserModel.findById(app.applicant_id);
+            const applicant = await UserModel.findOne({email: app.applicant_id});
             const applicant_name = applicant.username;
             const task = await TaskModel.findById(app.applied_task_id);
             const taskname = task.taskName;
@@ -41,8 +42,8 @@ export async function POST(request: NextRequest) {
             const organizer = await UserModel.findOne({email: email});
             const applications = organizer.application;
             
-            for (const app of applications) {
-                console.log(app, 'dsc')
+            for (const app_id of applications) {
+                const app = await ApplicationModel.findById(app_id);
                 await processdata(app);
             }
 
@@ -51,6 +52,7 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({appplicants_data, success: true});
             
         } catch (error) {
+            console.error("Error in getorganizerdata:", error);
             return NextResponse.json({success: false, message: error});
             
         }

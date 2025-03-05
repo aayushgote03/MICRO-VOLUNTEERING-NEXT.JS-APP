@@ -39,6 +39,7 @@ const EmailContent: React.FC = () => {
   const email: Email = JSON.parse(data[0]);
   const organizername = searchParams.get('organizername');
   const app_id = searchParams.get('application_id');
+  console.log(app_id, 'app_id');
 
   const showNotification = (message: string, type: NotificationType, description?: string): void => {
     setNotification({ show: true, message, type, description });

@@ -16,8 +16,8 @@ interface Application {
   taskname: string;
 }
 
-type StatusType = 'Pending' | 'Reviewed' | 'Rejected';
-type StatusEmojiType = 'pending' | 'approve' | 'Rejected';
+type StatusType = 'pending' | 'approved' | 'rejected';
+type StatusEmojiType = 'pending' | 'approved' | 'rejected';
 
 type CategoryType = 
   | "Environmental Conservation"
@@ -50,7 +50,7 @@ const ApplicationContent = () => {
         });
 
         const response = await res.json();
-        console.log(response);
+        console.log(response, 'ds');
         const mydata = response.appplicants_data;
         setapplications(mydata);
       } finally {
@@ -91,9 +91,9 @@ const ApplicationContent = () => {
   // Get status style
   const getStatusStyle = (status: StatusType) => {
     const styles = {
-      Pending: "bg-yellow-100 text-yellow-800",
-      Reviewed: "bg-green-100 text-green-800",
-      Rejected: "bg-red-100 text-red-800",
+      pending: "bg-yellow-100 text-yellow-800",
+      approved: "bg-green-100 text-green-800",
+      rejected: "bg-red-100 text-red-800",
     };
     return styles[status] || "bg-gray-100 text-gray-800";
   };
@@ -102,8 +102,8 @@ const ApplicationContent = () => {
   const getStatusEmoji = (status: StatusEmojiType) => {
     const emojis = {
       pending: "⏳",
-      approve: "✅",
-      Rejected: "❌",
+      approved: "✅",
+      rejected: "❌",
     };
     return emojis[status] || "📋";
   };
@@ -203,13 +203,13 @@ const ApplicationContent = () => {
           <div className="bg-green-100 rounded-xl p-4">
             <p className="text-green-600 font-semibold">✅ Approved</p>
             <p className="text-3xl font-bold text-green-800">
-              {applications.filter((app) => app.status === "approve").length}
+              {applications.filter((app) => app.status === "approved").length}
             </p>
           </div>
           <div className="bg-red-100 rounded-xl p-4">
             <p className="text-red-600 font-semibold">❌ Rejected</p>
             <p className="text-3xl font-bold text-red-800">
-              {applications.filter((app) => app.status === "Rejected").length}
+              {applications.filter((app) => app.status === "rejected").length}
             </p>
           </div>
         </div>

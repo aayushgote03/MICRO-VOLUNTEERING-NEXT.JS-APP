@@ -4,7 +4,6 @@ import TaskModel from "@/lib/Modals/taskschema";
 import UserModel from "@/lib/Modals/userschema";
 
 
-
 export async function PUT(request: NextRequest) {
   
   const payload = await request.json();
@@ -30,16 +29,13 @@ export async function PUT(request: NextRequest) {
       $push: { applied_user: user._id },
     });
 
-    const updated_user = await UserModel.findByIdAndUpdate(author._id, {
-      $push: { 'application': {applicant_id: user._id,
-      applied_task_id: task._id, email_link: payload.email_id}
-    }});
-
   
 
+    await UserModel.findByIdAndUpdate(author._id, {
+      $push: { application: payload.application_id }}); //add the application id to the author's application array
 
     await UserModel.findByIdAndUpdate( user._id ,{
-      $push: { tasks_applied: {task_id: task._id, status: 'pending'}
+      $push: { tasks_applied: payload.application_id  //add the application id to the user's tasks_applied array
     }});
 
     return NextResponse.json({ success: true, message: "application added"});

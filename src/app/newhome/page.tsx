@@ -55,6 +55,7 @@ export default function Home() {
         }
 
         const userData = await userRes.json();
+        console.log(userData, "userData");
 
         const filtertask = await userTasks.filter(
           (task: Task) => task.oftype === "createtask"
@@ -154,6 +155,17 @@ export default function Home() {
                 className="text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white"
               >
                 Pricing
+              </Link>
+              <Link
+                href={{
+                  pathname: "/dashboard",
+                  query: {
+                    user: user?.email || '',
+                  }
+                }}
+                className="text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white"
+              >
+                Dashboard
               </Link>
             </div>
 

@@ -16,7 +16,7 @@ const TaskSchema = new mongoose.Schema(
         capacity: {type: Number, default: 5},
         applied: {type: Number, default: 0},
         enrolled: {type: Number, default: 0},
-        tagline: {type: String}
+        messages: {type: [String], default: []},
     },
 );
 

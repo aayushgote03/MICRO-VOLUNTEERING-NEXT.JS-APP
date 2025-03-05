@@ -35,6 +35,7 @@ function UpdateTaskContent() {
   const searchParams = useSearchParams();
   const userData = searchParams.get("userData");
   const task = userData ? JSON.parse(userData) : null;
+  console.log(userData, 'userData');
   
   const [user, setUser] = useState(task.user);
   const [loading, setLoading] = useState(true);

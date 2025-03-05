@@ -136,14 +136,23 @@ function EmailComposerContent() {
       const data = await email_res.json();
       const email_id = data.result._id;
 
-      const res = await fetch(`/api/taskapplication`, {
-        method: "PUT",
-        body: JSON.stringify({ applicant: applicant, email_id: email_id, taskid: task_id }),
+      const res = await fetch(`/api/createapplication`, {
+        method: "POST",
+        body: JSON.stringify({ applicant_id: applicant, applied_task_id: task_id, email_link: email_id, status: 'pending' }),
       });
 
+
       const response = await res.json();
-      alert(response.message);
-      console.log(response);
+     
+
+      if (response.success) {
+        const postResponse = await fetch("/api/taskapplication", {
+          method: "PUT",
+          body: JSON.stringify({ applicant: applicant, taskid: task_id, application_id: response.newapplication._id }),
+        });
+        const data = await postResponse.json();
+        alert(data.message);
+      }
     }
   };
 

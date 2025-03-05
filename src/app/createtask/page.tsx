@@ -40,6 +40,7 @@ export default function CreateTask() {
         const response = await fetch("/api/get");
         if (!response.ok) throw new Error("Failed to fetch data");
         const data = await response.json();
+        console.log(data);
         setUser(data.user.email);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'An unknown error occurred');

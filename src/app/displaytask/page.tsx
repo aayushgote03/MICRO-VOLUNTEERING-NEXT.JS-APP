@@ -10,6 +10,7 @@ const TaskDetailsContent = () => {
   const searchParams = useSearchParams();
   const userData = searchParams.get("userData");
   const user = searchParams.get("user");
+  console.log(user, 'dsvsv');
   const [loading, setloading] = useState(true);
 
   const task = userData ? JSON.parse(userData) : null;
