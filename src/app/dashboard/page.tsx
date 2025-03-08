@@ -4,6 +4,7 @@ import { useState, useEffect, Suspense } from 'react';
 import Head from 'next/head';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
+import Navbar from '@/components/Navbar';
 
 interface Task {
     taskname: string;
@@ -58,83 +59,95 @@ function DashboardContent() {
     };
 
     return (
-        <div className="min-h-screen bg-gray-50">
-            <Head>
-                <title>Task Dashboard</title>
-                <meta name="description" content="Task Dashboard with Emoji Cards" />
-                <link rel="icon" href="/favicon.ico" />
-            </Head>
-
-            <main className="container mx-auto py-8 px-4">
-                <h1 className="text-3xl font-bold text-center mb-8">
-                    ✨ Task Dashboard ✨
-                </h1>
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {tasks.map((task) => (
-                        <div key={task.chatroom_id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
-                            <div className="p-5">
-                                <div className="flex items-center justify-between mb-3">
-                                    <span className="text-4xl">emoji</span>
-                                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(task.status)}`}>
-                                        {task.status}
-                                    </span>
+        <div className='bg-gradient-to-br from-violet-50 via-pink-50 to-cyan-50'>
+            <Navbar />
+            <div className="min-h-screen mt-16">
+                <main className="container mx-auto py-12 px-4">
+                    {/* Header Section */}
+                    <div className="text-center mb-12">
+                        <h1 className="text-4xl font-bold bg-gradient-to-r from-violet-600 to-indigo-600 text-transparent bg-clip-text mb-4">
+                            Your Task Dashboard
+                        </h1>
+                        <p className="text-gray-600">Manage and track your ongoing tasks</p>
+                    </div>
+                    
+                    {/* Tasks Grid */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        {tasks.map((task) => (
+                            <div 
+                                key={task.chatroom_id} 
+                                className="group bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-violet-100 overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
+                            >
+                                <div className="p-6">
+                                    {/* Status Badge */}
+                                    <div className="flex items-center justify-between mb-4">
+                                        <span className="text-3xl">🎯</span>
+                                        <span className={`px-3 py-1.5 rounded-full text-xs font-medium ${
+                                            task.status === "approved" ? "bg-emerald-100 text-emerald-700" :
+                                            task.status === "In Progress" ? "bg-blue-100 text-blue-700" :
+                                            task.status === "pending" ? "bg-amber-100 text-amber-700" :
+                                            "bg-gray-100 text-gray-700"
+                                        } shadow-sm`}>
+                                            {task.status}
+                                        </span>
+                                    </div>
+                                    
+                                    {/* Task Title */}
+                                    <h2 className={`font-bold mb-3 line-clamp-2 min-h-[3rem] bg-gradient-to-r from-violet-600 to-indigo-600 text-transparent bg-clip-text ${
+                                        task.taskname.length > 30 ? 'text-lg' : 'text-xl'
+                                    }`}>
+                                        {task.taskname}
+                                    </h2>
+                                    
+                                    {/* Task Details */}
+                                    <div className="space-y-3 mb-6">
+                                        <div className="flex items-center text-gray-600 bg-violet-50 rounded-lg p-2">
+                                            <span className="mr-2">📅</span>
+                                            <span className="font-medium">{formatDate(task.deadline)}</span>
+                                        </div>
+                                        <div className="flex items-center text-gray-600 bg-violet-50 rounded-lg p-2">
+                                            <span className="mr-2">👤</span>
+                                            <span className="font-medium">{task.author}</span>
+                                        </div>
+                                    </div>
                                 </div>
                                 
-                                <h2 className={`font-semibold mb-2 line-clamp-2 min-h-[3rem] ${
-                                    task.taskname.length > 30 
-                                    ? 'text-sm' 
-                                    : task.taskname.length > 20 
-                                    ? 'text-base' 
-                                    : 'text-xl'
-                                }`}>
-                                    {task.taskname}
-                                </h2>
-                                
-                                <div className="flex flex-col space-y-2 text-sm text-gray-600">
-                                    <div className="flex items-center">
-                                        <span className="mr-2">📅</span>
-                                        <span>Due: {formatDate(task.deadline)}</span>
-                                    </div>
-                                    <div className="flex items-center">
-                                        <span className="mr-2">👤</span>
-                                        <span>Created by: {task.author}</span>
-                                    </div>
+                                {/* Action Buttons */}
+                                <div className="flex border-t border-violet-100">
+                                    <Link
+                                        href={{
+                                            pathname: "/page",
+                                            query: {
+                                                chatroom_id: task.chatroom_id,
+                                                applied_users: task.applied_users,
+                                                task_author: task.author,
+                                                user: user
+                                            }
+                                        }}
+                                        className="flex items-center justify-center py-4 flex-1 bg-gradient-to-r from-violet-500 to-violet-600 text-white font-medium hover:from-violet-600 hover:to-violet-700 transition-all duration-300"
+                                    >
+                                        <span className="mr-2">👥</span> Team Chat
+                                    </Link>
+                                    <div className="w-px bg-violet-100"></div>
+                                    <button 
+                                        className="flex items-center justify-center py-4 flex-1 bg-gradient-to-r from-indigo-500 to-indigo-600 text-white font-medium hover:from-indigo-600 hover:to-indigo-700 transition-all duration-300"
+                                    >
+                                        <span className="mr-2">💬</span> Direct Chat
+                                    </button>
                                 </div>
                             </div>
-                            
-                            <div className="flex border-t">
-                                <Link
-                                    href={{
-                                        pathname: "/page",
-                                        query: {
-                                            chatroom_id: task.chatroom_id,
-                                            applied_users: task.applied_users,
-                                            task_author: task.author,
-                                            user: user
-                                        }
-                                    }}
-                                    className="flex items-center justify-center py-3 flex-1 bg-indigo-50 hover:bg-indigo-100 transition-colors text-indigo-700 font-medium"
-                                >
-                                    <span className="mr-2">👥</span> Team Chat
-                                </Link>
-                                <div className="w-px bg-gray-200"></div>
-                                <button 
-                                    className="flex items-center justify-center py-3 flex-1 bg-purple-50 hover:bg-purple-100 transition-colors text-purple-700 font-medium"
-                                >
-                                    <span className="mr-2">💬</span> Direct Chat
-                                </button>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-                
-                <div className="mt-10 text-center">
-                    <button className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-3 px-6 rounded-full font-medium shadow-lg hover:shadow-xl transition-shadow">
-                        ➕ Add New Task
-                    </button>
-                </div>
-            </main>
+                        ))}
+                    </div>
+                    
+                    {/* Add New Task Button */}
+                    <div className="mt-12 text-center">
+                        <button className="inline-flex items-center px-8 py-4 rounded-full bg-gradient-to-r from-violet-600 to-indigo-600 text-white font-medium shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-0.5 hover:from-violet-700 hover:to-indigo-700">
+                            <span className="mr-2">✨</span>
+                            Create New Task
+                        </button>
+                    </div>
+                </main>
+            </div>
         </div>
     );
 }
@@ -143,8 +156,11 @@ function DashboardContent() {
 export default function TaskDashboard() {
     return (
         <Suspense fallback={
-            <div className="min-h-screen flex items-center justify-center bg-gray-50">
-                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500"></div>
+            <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-violet-50 via-pink-50 to-cyan-50">
+                <div className="relative w-16 h-16">
+                    <div className="absolute top-0 left-0 w-full h-full border-4 border-violet-200 rounded-full animate-pulse"></div>
+                    <div className="absolute top-0 left-0 w-full h-full border-4 border-violet-600 rounded-full animate-spin border-t-transparent"></div>
+                </div>
             </div>
         }>
             <DashboardContent />

@@ -5,12 +5,16 @@ import { NextRequest, NextResponse } from "next/server";
 
 // CORS Headers (adjust the allowed origin as needed)
 
+
+
 export async function PUT(request: NextRequest) {
 
   const payload = await request.json();
   const taskid = payload.taskid;
   const taskdata = payload.taskdata;
   console.log(request.method);
+
+  
 
 
 

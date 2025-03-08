@@ -5,6 +5,8 @@ import { redirect } from "next/navigation";
 import { UploadButton } from "@/utils/uploadthing";
 import { useSearchParams } from "next/navigation";
 
+const today = new Date().toISOString().split("T")[0]; 
+
 const categoryEmojis = {
   Environmental: "🌱",
   Education: "📚",
@@ -79,6 +81,11 @@ function UpdateTaskContent() {
     e.preventDefault();
     let oftype = (e.nativeEvent as any).submitter.name;
     
+    if (status === "Inactive" && (!inactiveMessage || inactiveMessage.trim() === "")) {
+      alert("Please provide a message for the inactive task");
+      return;
+    }
+
     let result = await fetch(`/api/updatetask/`, {
       method: "PUT",
       headers: {
@@ -182,6 +189,7 @@ function UpdateTaskContent() {
                 type="date"
                 id="deadline"
                 value={deadline}
+                min={today}
                 onChange={(e) => setDeadline(e.target.value)}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 transition-all"
               />
@@ -229,14 +237,15 @@ function UpdateTaskContent() {
             {status === "Inactive" && (
               <div>
                 <label className="block text-gray-700 font-bold mb-2" htmlFor="inactiveMessage">
-                  💭 Custom Message for Inactive Task
+                  💭 Custom Message for Inactive Task <span className="text-red-500">*</span>
                 </label>
                 <textarea
                   id="inactiveMessage"
                   value={inactiveMessage}
                   onChange={(e) => setInactiveMessage(e.target.value)}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 transition-all"
-                
+                  placeholder="Please provide a message explaining why the task is inactive..."
+                  required={status === "Inactive"}
                 />
               </div>
             )}

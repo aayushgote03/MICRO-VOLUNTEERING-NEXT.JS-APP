@@ -18,10 +18,19 @@ export async function POST(req: NextRequest) {
         console.log(applied_user_ids);
 
         if(applied_user_ids.includes(found_user_id)) {
-            return NextResponse.json({message: "already applied"})
+            if(found_Task.users_to_notify.includes(user)) {
+                return NextResponse.json({message: "already applied", reminder: true})
+            }
+            else {
+            return NextResponse.json({message: "already applied", reminder: false})
+            }
         }
 
-        return NextResponse.json({message: "not applied yet"})
+        if(found_Task.users_to_notify.includes(user)) {
+            return NextResponse.json({message: "reminder already set", reminder: true});
+        }
+
+        return NextResponse.json({message: "not applied yet", reminder: false})
 
     } catch (error) {
 
@@ -29,6 +38,4 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({message: "failure"})
         
     }
-    
-
 }

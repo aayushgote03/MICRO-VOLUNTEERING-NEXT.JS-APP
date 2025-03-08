@@ -3,6 +3,7 @@ import Head from "next/head";
 import { useState, useEffect, FormEvent } from "react";
 import { redirect } from "next/navigation";
 import { UploadButton } from "@/utils/uploadthing";
+const today = new Date().toISOString().split("T")[0];
 
 const categoryEmojis = {
   Environmental: "🌱",
@@ -245,6 +246,7 @@ export default function CreateTask() {
               type="date"
               id="deadline"
               value={deadline}
+              min={today}
               onChange={(e) => setDeadline(e.target.value)}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all"
             />

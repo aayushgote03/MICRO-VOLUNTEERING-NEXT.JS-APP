@@ -152,6 +152,16 @@ function EmailComposerContent() {
         });
         const data = await postResponse.json();
         alert(data.message);
+
+        if(postResponse.ok) {
+          const response2 = await fetch("/api/taskapplication", {
+            method: "POST",
+            body: JSON.stringify({ taskid: task_id, applicationid: response.newapplication._id}),
+          });
+          const data2 = await response2.json();
+          console.log(data2, "approval notification");
+          alert(data2.message);
+        }
       }
     }
   };

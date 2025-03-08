@@ -17,6 +17,7 @@ const TaskSchema = new mongoose.Schema(
         applied: {type: Number, default: 0},
         enrolled: {type: Number, default: 0},
         messages: {type: [String], default: []},
+        users_to_notify: {type: [String], default: []},
     },
 );
 

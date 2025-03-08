@@ -1,3 +1,4 @@
+"use client";
 import React, { useState } from 'react';
 import Link from 'next/link';
 
@@ -39,18 +40,21 @@ const OrganizerDropdown = ({user}: OrganizerDropdownProps) => {
         >
           <Link 
             href="/mytasks"
+            target="_blank" rel="noopener noreferrer"
             className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
           >
             My Tasks
           </Link>
           <Link 
             href={{pathname: 'application_received', query:{user: user}}}
+            target="_blank" rel="noopener noreferrer"
             className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
           >
             Applications Received
           </Link>
           <Link 
             href="/createtask"
+            target="_blank" rel="noopener noreferrer"
             className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
           >
             Create Task

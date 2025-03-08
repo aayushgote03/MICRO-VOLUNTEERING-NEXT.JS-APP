@@ -7,7 +7,8 @@ const UserSchema = new mongoose.Schema(
         email: {type: String, unique: true},
         password: String,
         tasks_applied: {type: [String], default: []},
-        application: {type: [String], default: []}
+        application: {type: [String], default: []},
+        notifications_ids: {type: [String], default: []}
     },
 );
 
