@@ -237,71 +237,81 @@ export default function Home() {
         </div>
 
         {/* Mobile Menu - Updated styling */}
-        <div className={`fixed inset-y-0 right-0 w-full md:hidden transform transition-all duration-300 ${
-          isMenuOpen ? "translate-x-0" : "translate-x-full"
-        }`}>
-          <div className="h-full w-full bg-white/95 backdrop-blur-lg">
-            <div className="p-6 space-y-6">
-              <div className="flex justify-end">
-                <button
-                  onClick={() => setIsMenuOpen(false)}
-                  className="p-2 hover:bg-gray-200 dark:hover:bg-gray-800 rounded-lg"
-                >
-                  <svg
-                    className="w-6 h-6"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M6 18L18 6M6 6l12 12"
-                    />
-                  </svg>
-                </button>
-              </div>
-              <div className="flex flex-col space-y-4">
-                <div className="relative">
-                  <OrganizerDropdown user={user?.email || ''} />
-                </div>
+        <div
+  className={`fixed inset-y-0 right-0 w-full md:hidden transform transition-all duration-300 ease-in-out 
+    ${isMenuOpen ? "translate-x-0" : "translate-x-full"}`}
+>
+  <div className="h-full w-full bg-gradient-to-br from-gray-900 to-violet-900 text-white shadow-xl"> 
+    {/* Solid background without transparency */}
+    <div className="p-6 space-y-6 bg-gradient-to-br from-gray-900 to-violet-900">
+      
+      {/* Close Button */}
+      <div className="flex justify-end">
+        <button
+          onClick={() => setIsMenuOpen(false)}
+          className="p-2 rounded-lg hover:bg-gray-700 transition"
+        >
+          <svg
+            className="w-6 h-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M6 18L18 6M6 6l12 12"
+            />
+          </svg>
+        </button>
+      </div>
 
-                <Link
-                  href="#"
-                  className="text-lg py-2 text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white"
-                >
-                  Docs
-                </Link>
-                <Link
-                  href="#"
-                  className="text-lg py-2 text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white"
-                >
-                  Pricing
-                </Link>
-                <Link
-                  href="/auth/signup"
-                  className="text-lg py-2 text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white"
-                >
-                  Sign in
-                </Link>
-                <Link
-                href={{
-                  pathname: "/dashboard",
-                  query: {
-                    user: user?.email || '',
-                  }
-                }}
-                className="text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white"
-              >
-                Dashboard
-              </Link>
-              <NotificationDropdown user={user?.email || ''}/>
-              <LogoutButton />
-              </div>
-            </div>
-          </div>
+      {/* Menu Items */}
+      <div className="flex flex-col space-y-4">
+        
+        {/* Organizer Dropdown */}
+        <div className="relative">
+          <OrganizerDropdown user={user?.email || ""} />
         </div>
+
+        {/* Menu Links */}
+        <Link
+          href="#"
+          className="text-lg py-2 hover:text-gray-300 transition"
+        >
+          Docs
+        </Link>
+        <Link
+          href="#"
+          className="text-lg py-2 hover:text-gray-300 transition"
+        >
+          Pricing
+        </Link>
+        <Link
+          href="/auth/signup"
+          className="text-lg py-2 hover:text-gray-300 transition"
+        >
+          Sign in
+        </Link>
+        <Link
+          href={{
+            pathname: "/dashboard",
+            query: { user: user?.email || "" },
+          }}
+          className="text-lg py-2 hover:text-gray-300 transition"
+        >
+          Dashboard
+        </Link>
+
+        {/* Notification & Logout */}
+        <NotificationDropdown user={user?.email || ""} />
+        <LogoutButton />
+      </div>
+    </div>
+  </div>
+</div>
+
       </nav>
 
       {/* Main Content */}

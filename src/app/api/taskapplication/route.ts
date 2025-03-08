@@ -61,6 +61,7 @@ export async function POST(request: NextRequest) {
     const applicant_id = application.applicant_id;
 
     const notification = await NotificationModel.create({
+      type: 'application',
       task_id: task_id,
       user_email: applicant_id,
       application_id: applicationid,
@@ -68,7 +69,12 @@ export async function POST(request: NextRequest) {
     });
 
     const saved_notification = await notification.save();
-   
+
+    
+
+    const updated_user = await UserModel.findOneAndUpdate({email: applicant_id}, {
+      $push: { notifications_ids: saved_notification._id }
+    });
     
   } catch (error) {
     console.log(error);

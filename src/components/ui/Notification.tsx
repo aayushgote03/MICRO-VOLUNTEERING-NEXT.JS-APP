@@ -29,8 +29,9 @@ export default function NotificationDropdown({ user }: { user: string }) {
         body: JSON.stringify({ user_email }),
       });
       const data = await response.json();
-      console.log(data, 'data');
-      setNotifications(data);
+      const mergedArray = [...data.reminder_notifications, ...data.application_notifications];
+      console.log(mergedArray, 'mergedArray');
+      setNotifications(mergedArray);
     };
     fetchNotifications();
   }, []);
@@ -86,6 +87,7 @@ export default function NotificationDropdown({ user }: { user: string }) {
                 </Button>
               </div>
               <CardContent className="p-3 max-h-[70vh] overflow-y-auto">
+                Reminder Notifications
                 <AnimatePresence>
                   {unreadNotifications.length > 0 ? (
                     unreadNotifications.map((notification, index) => (
@@ -101,7 +103,7 @@ export default function NotificationDropdown({ user }: { user: string }) {
                           <div className="flex justify-between items-start mb-2">
                             <span className="font-medium text-purple-700">{notification.task_name}</span>
                             <span className="text-xs px-2 py-1 bg-purple-100 text-purple-600 rounded-full">
-                              {notification.status}
+                              is {notification.status} 
                             </span>
                           </div>
                           <div className="flex justify-between items-center">

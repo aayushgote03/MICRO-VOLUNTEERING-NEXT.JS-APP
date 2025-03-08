@@ -13,7 +13,7 @@ export async function POST(request: NextRequest) {
             console.log("reminder already set");
             return NextResponse.json({ message: "reminder already set" }, { status: 400 });
         }
-        const notification = await NotificationModel.create({ task_id, user_email, createdAt: getTime() });
+        const notification = await NotificationModel.create({ type: 'reminder',task_id, user_email, createdAt: getTime() });
         return NextResponse.json({ message: "Notification created", notification });
     } catch (error) {
         console.log(error);

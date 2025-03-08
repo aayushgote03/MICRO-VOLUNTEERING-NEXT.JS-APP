@@ -1,6 +1,9 @@
 import mongoose from "mongoose";
 
 const notificationSchema = new mongoose.Schema({
+    type: {
+        type: String,
+    },
     task_id: {
         type: String,
     },
