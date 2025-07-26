@@ -41,6 +41,12 @@ const LoginPage: React.FC = () => {
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="w-full max-w-md bg-white p-8 rounded-lg shadow-lg">
         <h2 className="text-2xl font-bold text-center text-gray-800">Login</h2>
+        {/* Show error breadcrumb if sign-in fails */}
+        {error && error !== 'FINE' && (
+          <div className="mb-4 px-4 py-2 bg-red-100 border border-red-400 text-red-700 rounded text-center">
+            Invalid credentials
+          </div>
+        )}
         <form onSubmit={handleSubmit} className="mt-6">
           <div className="mb-4">
             <label
@@ -53,7 +59,10 @@ const LoginPage: React.FC = () => {
               type="email"
               id="email"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => {
+                setEmail(e.target.value);
+                setError('FINE'); // Reset error on change
+              }}
               required
               className="mt-1 block w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-black"
             />
@@ -69,7 +78,10 @@ const LoginPage: React.FC = () => {
               type="password"
               id="password"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={(e) => {
+                setPassword(e.target.value);
+                setError('FINE'); // Reset error on change
+              }}
               required
               className="mt-1 block w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-black"
             />
