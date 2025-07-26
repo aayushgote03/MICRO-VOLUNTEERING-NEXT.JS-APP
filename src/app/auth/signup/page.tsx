@@ -41,9 +41,11 @@ const page = () => {
       method:"POST",
       body:JSON.stringify({handlename, username, email, password}),
     });
+  
     result = await result.json();
 
     if(result.status === 200) router.push('/auth/login');
+    else setError("An error occurred during signup.");
   }
 
   return (
