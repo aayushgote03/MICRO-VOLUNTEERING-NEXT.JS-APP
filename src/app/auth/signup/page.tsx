@@ -52,7 +52,14 @@ const page = () => {
         <h1 className="text-3xl font-extrabold text-center text-white mb-4 font-poppins">
           Create Account
         </h1>
-  
+
+        {/* Error Breadcrumb */}
+        {error && (
+          <div className="mb-4 px-4 py-2 bg-red-100 border border-red-400 text-red-700 rounded text-center">
+            {error}
+          </div>
+        )}
+
         <div className="flex flex-col gap-4">
           {/* Handle Name Input */}
           <div>
